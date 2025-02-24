@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orbis Arcana - The First Gate</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap'); /* Old-world font */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 
         * {
             margin: 0;
@@ -23,27 +24,34 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
             padding: 10px;
         }
         
         #container {
-            background: rgba(0, 0, 0, 0.5); /* More transparency */
+            background: rgba(0, 0, 0, 0.4);
             padding: 30px;
             border-radius: 8px;
             max-width: 85%;
             min-width: 300px;
+            position: relative;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
         }
 
         .title {
-            color: #ffcc00; /* Gold color for Orbis Arcana */
-            font-size: 36px;
+            color: #ffcc00;
+            font-size: 32px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
         .subtitle {
-            color: #e0e0e0; /* Slightly dimmer for The First Gate */
+            color: #e0e0e0;
             font-size: 20px;
             margin-bottom: 15px;
         }
@@ -61,11 +69,11 @@
         }
 
         .correct {
-            color: #66ffcc; /* Brighter green */
+            color: #66ffcc;
         }
 
         .incorrect {
-            color: #ff6666; /* Softer red */
+            color: #ff6666;
         }
 
         input {
@@ -80,7 +88,9 @@
             margin-top: 8px;
         }
 
-        button {
+        button, #enterLink {
+            display: block;
+            width: auto;
             padding: 10px 20px;
             font-size: 14px;
             font-weight: bold;
@@ -89,57 +99,35 @@
             border: 2px solid #ffcc00;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 12px;
+            margin: 12px auto 0;
             transition: 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 204, 0, 0.7), transparent);
-            transition: 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
-        }
-
-        button:hover {
+        button:hover, #enterLink:hover {
             background: #ffcc00;
             color: black;
             box-shadow: 0px 0px 10px #ffcc00;
         }
-        
+
         #enterLink {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: bold;
+            display: none;
             text-decoration: none;
-            color: #000;
-            background: #ffcc00;
-            border-radius: 5px;
-            transition: 0.3s;
-            box-shadow: 0px 0px 10px #ffcc00;
+            text-align: center;
         }
 
-        #enterLink:hover {
-            background: #fff;
-            color: #ffcc00;
-            box-shadow: 0px 0px 15px #ffcc00;
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            #container {
+                max-width: 95%;
+            }
         }
     </style>
 </head>
 <body>
-
     <div id="container">
+        <img src="Orbis Arcane.png" alt="Orbis Arcana Logo" class="logo">
         <h1 class="title">Orbis Arcana</h1>
         <h2 class="subtitle">The First Gate</h2>
         
@@ -150,25 +138,27 @@
            What am I?"</i></p>
 
         <p><strong>Enter the answer to proceed:</strong></p>
-
         <input type="text" id="answerInput" placeholder="Your answer...">
         <button onclick="checkAnswer()">Submit</button>
 
         <p id="result"></p>
+        <a id="enterLink" href="https://discord.gg/jZthKB8Esv">Enter Orbis Arcana</a>
     </div>
 
     <script>
         function checkAnswer() {
             var answer = document.getElementById("answerInput").value.toLowerCase().trim();
             var result = document.getElementById("result");
+            var enterLink = document.getElementById("enterLink");
 
             if (answer === "shadow") { 
-                result.innerHTML = "<span class='correct'>Correct. Welcome to the Circle.</span> <br><br> <a id='enterLink' href='https://discord.gg/jZthKB8Esv'>Enter Orbis Arcana</a>";
+                result.innerHTML = "<span class='correct'>Correct. Welcome to the Circle.</span>";
+                enterLink.style.display = "block";
             } else {
                 result.innerHTML = "<span class='incorrect'>Incorrect. The path remains closed.</span>";
+                enterLink.style.display = "none";
             }
         }
     </script>
-
 </body>
 </html>
