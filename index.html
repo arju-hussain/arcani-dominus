@@ -3,26 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbis Arcana - The First Gate</title>
+    <title>Orbis Arcana - Dare to Enter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap'); /* Old map-style font */
+        @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap'); /* Old manuscript-style font */
 
         body {
-            background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed; 
+            background: url('charlesdeluvio-pcZvxrAyYoQ-unsplash.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: #e0e0e0;
+            color: #c9b280;
             text-align: center;
-            font-family: 'IM Fell English', serif;
+            font-family: 'Uncial Antiqua', cursive;
             padding: 50px;
         }
         
         #container {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             padding: 30px;
             border-radius: 10px;
             display: inline-block;
+            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.5);
         }
         
+        h1 {
+            color: #ff0000;
+            text-shadow: 0px 0px 10px red;
+        }
+
         #result {
             margin-top: 20px;
             font-size: 20px;
@@ -52,36 +58,22 @@
             padding: 12px 25px;
             font-size: 16px;
             font-weight: bold;
-            background: #222;
-            color: #fff;
-            border: 2px solid #c4a000;
+            background: black;
+            color: #ff0000;
+            border: 2px solid #ff0000;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
             transition: 0.3s;
             position: relative;
             overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(196, 160, 0, 0.7), transparent);
-            transition: 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
+            text-shadow: 0px 0px 5px red;
         }
 
         button:hover {
-            background: #c4a000;
+            background: #ff0000;
             color: black;
-            box-shadow: 0px 0px 10px #c4a000;
+            box-shadow: 0px 0px 15px red;
         }
         
         #enterLink {
@@ -91,24 +83,25 @@
             font-size: 16px;
             font-weight: bold;
             text-decoration: none;
-            color: #000;
-            background: #c4a000;
+            color: black;
+            background: #ff0000;
             border-radius: 5px;
             transition: 0.3s;
-            box-shadow: 0px 0px 10px #c4a000;
+            box-shadow: 0px 0px 15px red;
+            text-shadow: 0px 0px 5px black;
         }
 
         #enterLink:hover {
-            background: #fff;
-            color: #c4a000;
-            box-shadow: 0px 0px 15px #c4a000;
+            background: black;
+            color: #ff0000;
+            box-shadow: 0px 0px 20px red;
         }
     </style>
 </head>
 <body>
 
     <div id="container">
-        <h1>Orbis Arcana - The First Gate</h1>
+        <h1>Dare to Enter</h1>
         <p><i>"I have no substance, yet I follow you close.  
            I vanish in darkness but thrive in the glow.  
            Without light, I cannot be,  
