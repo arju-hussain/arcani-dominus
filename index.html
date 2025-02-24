@@ -30,41 +30,44 @@
         
         #container {
             background: rgba(0, 0, 0, 0.4);
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 85%;
-            min-width: 300px;
-            position: relative;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 75%;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo {
-            width: 100px;
+            width: 80px;
             height: auto;
             margin-bottom: 10px;
         }
 
         .title {
             color: #ffcc00;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
         .subtitle {
             color: #e0e0e0;
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 15px;
         }
 
         p {
-            font-size: 16px;
-            margin: 15px 0;
+            font-size: 14px;
+            margin: 10px 0;
             line-height: 1.5;
         }
 
         #result {
-            margin-top: 15px;
-            font-size: 18px;
+            margin-top: 10px;
+            font-size: 16px;
             font-weight: bold;
         }
 
@@ -77,51 +80,56 @@
         }
 
         input {
-            padding: 10px;
-            font-size: 16px;
-            width: 90%;
+            padding: 8px;
+            font-size: 14px;
+            width: 80%;
             border: 1px solid #888;
             background: #222;
             color: #fff;
             border-radius: 5px;
             outline: none;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        button, #enterLink {
-            display: block;
-            width: auto;
-            padding: 10px 20px;
-            font-size: 14px;
+        button {
+            padding: 8px 16px;
+            font-size: 12px;
             font-weight: bold;
             background: #222;
             color: #ffcc00;
             border: 2px solid #ffcc00;
             border-radius: 5px;
             cursor: pointer;
-            margin: 12px auto 0;
+            margin-top: 8px;
             transition: 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover, #enterLink:hover {
+        button:hover {
             background: #ffcc00;
             color: black;
             box-shadow: 0px 0px 10px #ffcc00;
         }
-
+        
         #enterLink {
-            display: none;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
             text-decoration: none;
-            text-align: center;
+            color: #000;
+            background: #ffcc00;
+            border-radius: 5px;
+            transition: 0.3s;
+            box-shadow: 0px 0px 10px #ffcc00;
         }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 5px;
-            }
-            #container {
-                max-width: 95%;
-            }
+        #enterLink:hover {
+            background: #fff;
+            color: #ffcc00;
+            box-shadow: 0px 0px 15px #ffcc00;
         }
     </style>
 </head>
@@ -138,25 +146,22 @@
            What am I?"</i></p>
 
         <p><strong>Enter the answer to proceed:</strong></p>
+
         <input type="text" id="answerInput" placeholder="Your answer...">
         <button onclick="checkAnswer()">Submit</button>
 
         <p id="result"></p>
-        <a id="enterLink" href="https://discord.gg/jZthKB8Esv">Enter Orbis Arcana</a>
     </div>
 
     <script>
         function checkAnswer() {
             var answer = document.getElementById("answerInput").value.toLowerCase().trim();
             var result = document.getElementById("result");
-            var enterLink = document.getElementById("enterLink");
 
             if (answer === "shadow") { 
-                result.innerHTML = "<span class='correct'>Correct. Welcome to the Circle.</span>";
-                enterLink.style.display = "block";
+                result.innerHTML = "<span class='correct'>Correct. Welcome to the Circle.</span> <br><br> <a id='enterLink' href='https://discord.gg/jZthKB8Esv'>Enter Orbis Arcana</a>";
             } else {
                 result.innerHTML = "<span class='incorrect'>Incorrect. The path remains closed.</span>";
-                enterLink.style.display = "none";
             }
         }
     </script>
