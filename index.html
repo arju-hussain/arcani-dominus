@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbis Arcana - The First Gate</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap'); /* Futuristic font */
+
+        body {
+            background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed; 
+            background-size: cover;
+            color: #e0e0e0;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            padding: 50px;
+        }
+        
+        #container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: #00ff99;
+        }
+
+        .incorrect {
+            color: #ff4444;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            border: 1px solid #555;
+            background: #222;
+            color: #fff;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #222;
+            color: #fff;
+            border: 2px solid #00ff99;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 153, 0.7), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            background: #00ff99;
+            color: black;
+            box-shadow: 0px 0px 10px #00ff99;
+        }
+        
+        #enterLink {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #000;
+            background: #00ff99;
+            border-radius: 5px;
+            transition: 0.3s;
+            box-shadow: 0px 0px 10px #00ff99;
+        }
+
+        #enterLink:hover {
+            background: #fff;
+            color: #00ff99;
+            box-shadow: 0px 0px 15px #00ff99;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h1>Orbis Arcana - The First Gate</h1>
+        <p><i>"I have no substance, yet I follow you close.  
+           I vanish in darkness but thrive in the glow.  
+           Without light, I cannot be,  
+           Yet in its presence, you’ll always see me.  
+           What am I?"</i></p>
+
+        <p>Enter the answer to proceed:</p>
+
+        <input type="text" id="answerInput" placeholder="Your answer...">
+        <button onclick="checkAnswer()">Submit</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function checkAnswer() {
+            var answer = document.getElementById("answerInput").value.toLowerCase().trim();
+            var result = document.getElementById("result");
+
+            if (answer === "shadow") { 
+                result.innerHTML = "<span class='correct'>Correct. Welcome to the Circle.</span> <br><br> <a id='enterLink' href='https://discord.gg/jZthKB8Esv'>Enter Orbis Arcana</a>";
+            } else {
+                result.innerHTML = "<span class='incorrect'>Incorrect. The path remains closed.</span>";
+            }
+        }
+    </script>
+
+</body>
+</html>
