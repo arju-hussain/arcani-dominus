@@ -7,26 +7,30 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap'); /* Old-world font */
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: url('charlesdeluvio-pcZvxrAyYoQ-unsplash.jpg') no-repeat center center fixed;
+            background: url('david-werbrouck-5GwLlb-_UYk-unsplash.jpg') no-repeat center center fixed;
             background-size: cover;
             color: #e0e0e0;
             text-align: center;
             font-family: 'Cinzel', serif;
-            padding: 50px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
         }
         
         #container {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7); /* Adjusted transparency */
             padding: 30px;
             border-radius: 10px;
-            display: inline-block;
-            max-width: 90%;
+            max-width: 80%;
         }
         
         #result {
@@ -36,18 +40,18 @@
         }
 
         .correct {
-            color: #00ff99;
+            color: #66ffcc; /* Brighter green */
         }
 
         .incorrect {
-            color: #ff4444;
+            color: #ff6666; /* Softer red */
         }
 
         input {
             padding: 10px;
             font-size: 16px;
             width: 80%;
-            border: 1px solid #555;
+            border: 1px solid #888;
             background: #222;
             color: #fff;
             border-radius: 5px;
@@ -59,7 +63,7 @@
             font-size: 16px;
             font-weight: bold;
             background: #222;
-            color: #fff;
+            color: #ffcc00;
             border: 2px solid #ffcc00;
             border-radius: 5px;
             cursor: pointer;
