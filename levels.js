@@ -2,49 +2,46 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 import { getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
-// 🔥 Define Riddles & Answers
-const riddles = {
-    2: "The more you take, the more you leave behind. What am I?",
-    3: "Coordniates \n Find Me!",
-    4: ".. / .... ..- -- / -... ..- - / .... .- ...- . / -. --- / -- --- ..- - .... --..--  \n .. / -... .-. . .- - .... . / -... ..- - / .... .- ...- . / -. --- / .-.. ..- -. --. ... --..-- \n .-- .... . -. / -.. .- .-. -.- -. . ... ... / ..-. .- .-.. .-.. ... --..-- / .. / -.- . . .--. / - .... . / .-.. .. --. .... - ... / .- .-.. .. ...- . .-.-.- \n .-- .... .- - / .- -- / .. ..--.. \n Find Answer Near Me!",
-    5: "A eplac wrehe dahns tearce dna ednm, \nTamel nda oodw, sloot revne dne. \nEwher rpkass yam ylf, nda saedii rgow, \nDinf em wrehe eth scmtafnrer og."
-};
-
 // ✅ Check If We Are on level.html Before Running the Script
 if (window.location.pathname.includes("level.html")) {
     
-    // 🔹 Load Level & Riddle (With Error Prevention)
-    function loadLevel() {
+    async function getLevelData(level) {
+        try {
+            const levelRef = doc(db, "levels", level.toString());
+            const levelSnap = await getDoc(levelRef);
+
+            if (levelSnap.exists()) {
+                return levelSnap.data();
+            } else {
+                console.warn(`⚠️ No data found for Level ${level} in Firestore.`);
+                return null;
+            }
+        } catch (error) {
+            console.error("❌ Firestore error while fetching level data:", error);
+            return null;
+        }
+    }
+
+    async function loadLevel() {
         const urlParams = new URLSearchParams(window.location.search);
         const level = parseInt(urlParams.get("level")) || 2;
 
-        // ✅ Check if elements exist before modifying them
         const levelTitle = document.getElementById("levelTitle");
         const riddleText = document.getElementById("riddleText");
 
-        if (levelTitle && riddleText) {
+        const levelData = await getLevelData(level);
+        
+        if (levelTitle && riddleText && levelData) {
             levelTitle.innerText = `Level ${level}`;
-            riddleText.innerText = riddles[level] || "Riddle not found!";
+            riddleText.innerText = levelData.riddle || "Riddle not found!";
         } else {
             console.warn("⚠️ WARNING: Level elements not found on this page. Skipping update.");
         }
     }
 
     async function getCorrectAnswer(level) {
-        try {
-            const answerRef = doc(db, "answers", level.toString());
-            const answerSnap = await getDoc(answerRef);
-
-            if (answerSnap.exists()) {
-                return answerSnap.data().answer.toLowerCase();
-            } else {
-                console.warn(`⚠️ No answer found for Level ${level} in Firestore.`);
-                return null;
-            }
-        } catch (error) {
-            console.error("❌ Firestore error while fetching answer:", error);
-            return null;
-        }
+        const levelData = await getLevelData(level);
+        return levelData ? levelData.answer.toLowerCase() : null;
     }
 
     // 🔹 Check Answer & Progress
@@ -87,14 +84,7 @@ if (window.location.pathname.includes("level.html")) {
 
                 // ✅ Ensure the update is confirmed before redirecting
                 setTimeout(() => {
-                    console.log(`🔄 Checking if Level ${nextLevel} exists in riddles...`);
-                    if (riddles[nextLevel]) {
-                        console.log(`🎉 Level ${nextLevel} found! Redirecting now...`);
-                        window.location.href = `level.html?level=${nextLevel}`;
-                    } else {
-                        console.log("⌛ No new levels yet. Redirecting to waiting page...");
-                        window.location.href = `waiting.html?level=${level}`;
-                    }
+                    window.location.href = `level.html?level=${nextLevel}`;
                 }, 2000);
 
             } catch (error) {
@@ -117,7 +107,3 @@ if (window.location.pathname.includes("level.html")) {
 } else {
     console.warn("⚠️ Not on level.html. Skipping level script.");
 }
-
-// ✅ Export riddles so other scripts can access them
-export default riddles;
-
