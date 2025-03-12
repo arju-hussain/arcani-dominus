@@ -119,4 +119,5 @@ if (window.location.pathname.includes("level.html")) {
 }
 
 // ✅ Export riddles so other scripts can access them
-export { riddles };
+export default riddles;
+
