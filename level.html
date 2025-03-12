@@ -35,13 +35,21 @@
         import { getRiddle } from "./levels.js"; // ✅ Fetch riddle from Firestore
 
         async function loadRiddle() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const level = parseInt(urlParams.get("level")) || 2;
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = parseInt(urlParams.get("level")) || 2;
 
-            const riddleText = await getRiddle(level);
-            document.getElementById("levelTitle").innerText = `Level ${level}`;
-            document.getElementById("riddleText").innerText = riddleText || "Riddle not found!";
-        }
+    const riddleTextElement = document.getElementById("riddleText");
+    const levelTitleElement = document.getElementById("levelTitle");
+
+    if (!riddleTextElement || !levelTitleElement) {
+        console.warn("⚠ Riddle elements not found in HTML.");
+        return;
+    }
+
+    const riddleText = await getRiddle(level);
+    levelTitleElement.innerText = `Level ${level}`;
+    riddleTextElement.innerText = riddleText || "Riddle not found!";
+}
 
         async function loadLeaderboard() {
             try {
