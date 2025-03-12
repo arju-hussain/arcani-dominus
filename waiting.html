@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbis Arcana - Waiting Room</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <h1 class="title">Orbis Arcana</h1>
+        <p>🔮 A new challenge is coming soon. Stay tuned!</p>
+        <p id="status">Checking for new levels...</p>
+
+        <!-- 📢 Announcements Section -->
+        <div id="announcements-section">
+            <p id="announcements">Loading announcements...</p>
+        </div>
+    </div>
+
+    <script type="module">
+    import { riddles } from "./levels.js";
+    import { auth } from "./firebase-config.js";
+    import { signOut } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lastLevel = parseInt(urlParams.get("level")) || 2;
+    const nextLevel = lastLevel + 1;
+
+    async function checkForNewLevels() {
+        console.log("🔍 Checking for new levels...");
+
+        // ✅ Force Fetch Latest Data (Bypassing Cache)
+        try {
+            const response = await fetch("levels.js?t=" + new Date().getTime());
+            if (!response.ok) {
+                throw new Error("Failed to fetch levels.js");
+            }
+        } catch (error) {
+            console.error("❌ Error fetching levels.js:", error);
+        }
+
+        // ✅ Now Check If Next Level Exists
+        if (riddles[nextLevel]) {
+            console.log("🎉 New level found! Redirecting...");
+            window.location.href = `level.html?level=${nextLevel}`;
+        } else {
+            document.getElementById("status").innerText = "No new levels yet. Keep waiting...";
+        }
+    }
+
+    // ✅ Check Every 3 Seconds Instead of 5
+    setInterval(checkForNewLevels, 3000);
+
+    // 🔹 ANNOUNCEMENTS SYSTEM (Only Message)
+    async function loadAnnouncements() {
+        try {
+            let response = await fetch("announcements.json");
+            let data = await response.json();
+            document.getElementById("announcements").innerText = data.message;
+        } catch (error) {
+            console.error("❌ Error loading announcements:", error);
+            document.getElementById("announcements").innerText = "Failed to load announcements.";
+        }
+    }
+
+    // Load announcements on page load
+    loadAnnouncements();
+
+    // ✅ LOGOUT AFTER 1 MINUTE (TESTING)
+    function startLogoutTimer() {
+        console.log("⏳ Logout countdown started (1 min)...");
+
+        setTimeout(async () => {
+            console.log("🔴 Logging out due to inactivity...");
+            await signOut(auth);
+            window.location.href = "login.html"; // ✅ Redirect to login
+        }, 60 * 1000); // ⏳ 1 minute
+    }
+
+    // ✅ Start the logout timer when the user reaches the waiting page
+    startLogoutTimer();
+</script>
