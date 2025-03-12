@@ -150,16 +150,23 @@
             }
         });
 
-        async function loadAnnouncements() {
-            try {
-                let response = await fetch("announcements.json");
-                let data = await response.json();
-                document.getElementById("announcements").innerText = data.message;
-            } catch (error) {
-                console.error("❌ Error loading announcements:", error);
-                document.getElementById("announcements").innerText = "Failed to load announcements.";
-            }
-        }
+       import { getAnnouncement } from "./levels.js";
+
+async function loadAnnouncements() {
+    const announcementElement = document.getElementById("announcements");
+
+    if (!announcementElement) {
+        console.warn("⚠ Announcements element not found.");
+        return;
+    }
+
+    const announcementText = await getAnnouncement();
+    announcementElement.innerText = announcementText;
+}
+
+// ✅ Load announcements on page load
+document.addEventListener("DOMContentLoaded", loadAnnouncements);
+
 
         loadAnnouncements();
     </script>
