@@ -1,41 +1,117 @@
-async function loadLeaderboard() {
-    try {
-        const leaderboardDiv = document.getElementById("leaderboard");
-        if (!leaderboardDiv) {
-            console.error("❌ leaderboardDiv not found in HTML.");
-            return;
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbis Arcana - Level</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <img src="Orbis Arcane.png" alt="Orbis Arcana Logo" class="logo">
+        <h1 class="title">Orbis Arcana</h1>
+        <h2 id="levelTitle">Level</h2>
 
-        leaderboardDiv.innerHTML = "<p>Loading...</p>";
+        <!-- 📜 Riddle Section -->
+        <p id="riddleText" class="riddle">Loading riddle...</p>
+        <input type="text" id="answerInput" class="input-field" placeholder="Enter your answer">
+        <button id="submitAnswer" class="submit-button">Submit</button>
+        <p id="feedback"></p>
 
-        const leaderboardQuery = query(
-            collection(db, "players"),
-            orderBy("level", "desc")
-        );
+        <!-- 📢 Announcements Section (Only Message) -->
+        <p id="announcements">Loading announcements...</p>
 
-        const querySnapshot = await getDocs(leaderboardQuery);
+        <!-- 🏆 Leaderboard Section -->
+        <div id="leaderboard-section">
+            <button id="loadLeaderboardBtn" class="toggle-button">🏆 Show Leaderboard</button>
+            <div id="leaderboard" class="hidden">Loading leaderboard...</div>
+        </div>
+    </div>
 
-        if (querySnapshot.empty || querySnapshot.docs.length === 0) {
-            leaderboardDiv.innerHTML = "<p>No players found.</p>";
-            return;
-        }
+    <!-- ✅ JavaScript Code -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
-        let leaderboardHTML = "<ol>";
-        querySnapshot.forEach(doc => {
-            const player = doc.data();
-            if (!player.name || player.level === undefined || player.level === null) {
-                console.warn("⚠ Skipping invalid player:", player);
-                return;
+        // ✅ Import Firebase Config (Ensures `db` is available)
+        import { db } from "./firebase-config.js";
+        import "./levels.js"; // ✅ Loads riddles & level system
+
+        async function loadLeaderboard() {
+            try {
+                const leaderboardDiv = document.getElementById("leaderboard");
+                if (!leaderboardDiv) {
+                    console.error("❌ leaderboardDiv not found in HTML.");
+                    return;
+                }
+
+                leaderboardDiv.innerHTML = "<p>Loading...</p>";
+
+                const leaderboardQuery = query(
+                    collection(db, "players"),
+                    orderBy("level", "desc")
+                );
+
+                const querySnapshot = await getDocs(leaderboardQuery);
+
+                if (querySnapshot.empty || querySnapshot.docs.length === 0) {
+                    leaderboardDiv.innerHTML = "<p>No players found.</p>";
+                    return;
+                }
+
+                let leaderboardHTML = "<ol>";
+                querySnapshot.forEach(doc => {
+                    const player = doc.data();
+                    if (!player.name || player.level === undefined || player.level === null) {
+                        console.warn("⚠ Skipping invalid player:", player);
+                        return;
+                    }
+                    leaderboardHTML += `<li>${player.name} - Level ${player.level}</li>`;
+                });
+                leaderboardHTML += "</ol>";
+
+                leaderboardDiv.innerHTML = leaderboardHTML;
+                leaderboardDiv.classList.remove("hidden");
+                leaderboardDiv.style.display = "block";
+            } catch (error) {
+                console.error("❌ Error loading leaderboard:", error);
+                document.getElementById("leaderboard").innerHTML = "<p>Error loading leaderboard.</p>";
             }
-            leaderboardHTML += `<li>${player.name} - Level ${player.level}</li>`;
-        });
-        leaderboardHTML += "</ol>";
+        }
 
-        leaderboardDiv.innerHTML = leaderboardHTML;
-        leaderboardDiv.classList.remove("hidden");
-        leaderboardDiv.style.display = "block";
-    } catch (error) {
-        console.error("❌ Error loading leaderboard:", error);
-        document.getElementById("leaderboard").innerHTML = "<p>Error loading leaderboard.</p>";
-    }
-}
+        // ✅ Ensure the leaderboard button exists before adding event listeners
+        document.addEventListener("DOMContentLoaded", () => {
+            const leaderboardBtn = document.getElementById("loadLeaderboardBtn");
+            const leaderboardDiv = document.getElementById("leaderboard");
+
+            if (leaderboardBtn && leaderboardDiv) {
+                leaderboardBtn.addEventListener("click", () => {
+                    loadLeaderboard();
+                    setTimeout(() => {
+                        leaderboardDiv.classList.remove("hidden");
+                        leaderboardDiv.style.display = "block";
+                    }, 500);
+                });
+            } else {
+                console.warn("⚠ Leaderboard button or leaderboardDiv not found in HTML.");
+            }
+        });
+
+        // 🔹 ANNOUNCEMENTS SYSTEM (Only Message)
+        async function loadAnnouncements() {
+            try {
+                let response = await fetch("announcements.json");
+                let data = await response.json();
+                document.getElementById("announcements").innerText = data.message;
+            } catch (error) {
+                console.error("❌ Error loading announcements:", error);
+                document.getElementById("announcements").innerText = "Failed to load announcements.";
+            }
+        }
+
+        // ✅ Load announcements on page load
+        loadAnnouncements();
+    </script>
+
+</body>
+</html>
