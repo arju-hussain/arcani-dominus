@@ -11,69 +11,76 @@
             text-align: center;
             background-color: #0a0a0a;
             color: #ffffff;
-            padding: 20px;
+            padding: 40px;
         }
         #container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
         h1 {
-            font-size: 2.5em;
+            font-size: 3em;
+            margin-bottom: 20px;
         }
         .rules {
             text-align: left;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 25px;
+            line-height: 1.8;
         }
         ul {
             list-style: none;
             padding: 0;
         }
         li {
-            margin: 10px 0;
+            margin: 15px 0;
+            font-size: 1.2em;
         }
         .input-container {
-            margin-top: 20px;
+            margin-top: 30px;
         }
         #agreeInput {
-            padding: 8px;
-            font-size: 1em;
-            width: 50%;
+            padding: 12px;
+            font-size: 1.1em;
+            width: 60%;
             text-align: center;
+            border-radius: 5px;
+            border: none;
+            outline: none;
         }
         .start-button {
             background: #ffcc00;
             color: #0a0a0a;
-            font-size: 1.2em;
-            padding: 10px 20px;
+            font-size: 1.3em;
+            padding: 12px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
             transition: 0.3s;
             display: none; /* Hidden initially */
         }
         .start-button:hover {
             background: #ffaa00;
+            transform: scale(1.05);
         }
         .warning {
             color: red;
-            margin-top: 10px;
-            font-size: 0.9em;
+            margin-top: 12px;
+            font-size: 1em;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>🔮 Orbis Arcana - The Beginning</h1>
-        <p>Welcome, Seeker. You have entered a world where only the clever and the bold shall pass.</p>
-        <p>This is not just a game—it is a test of wisdom, wit, and perception.</p>
+        <h1> Orbis Arcana - The Beginning</h1>
+        <p style="font-size: 1.3em;">Welcome, Seeker. You have entered a world where only the clever and the bold shall pass.</p>
+        <p style="font-size: 1.2em;">This is not just a game—it is a test of wisdom, wit, and perception.</p>
 
         <div class="rules">
             <h2>📜 Rules of the Arcana</h2>
@@ -83,12 +90,12 @@
                 <li>🤝 <b>No Sharing Answers</b> - The journey must be taken alone.</li>
                 <li>⚔ <b>Beware of False Clues</b> - Not all hints are what they seem.</li>
                 <li>🏆 <b>Only the Worthy Advance</b> - There are no shortcuts.</li>
-                <li>🚨 <b>QR Codes Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the QR codes placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
+                <li>🚨 <b>Clues Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the clues placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
             </ul>
         </div>
 
         <div class="input-container">
-            <p>To proceed, type "<b>I Agree</b>" below and press Enter:</p>
+            <p style="font-size: 1.2em;">To proceed, type "<b>I Agree</b>" below and press Enter:</p>
             <input type="text" id="agreeInput" placeholder="Type here..." oninput="checkAgreement()">
             <p class="warning" id="warningText"></p>
         </div>
@@ -113,7 +120,7 @@
 
         document.getElementById("startGame").addEventListener("click", function() {
             localStorage.setItem("hasAgreed", "true"); // Store agreement in localStorage
-            window.location.href = "firstgate.html"; // Redirect to main game index page
+            window.location.href = "firstgate.html"; // Redirect to first gate page
         });
 
         // ✅ Check if the user has already agreed before
