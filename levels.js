@@ -2,18 +2,12 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 import { getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
-// 🔥 Define Riddles & Answers
+// 🔥 Define Riddles (Keep in Code)
 const riddles = {
     2: "The more you take, the more you leave behind. What am I?",
-    3: "Coordniates \n Find Me!",
+    3: "Coordinates \n Find Me!",
     4: ".. / .... ..- -- / -... ..- - / .... .- ...- . / -. --- / -- --- ..- - .... --..--  \n .. / -... .-. . .- - .... . / -... ..- - / .... .- ...- . / -. --- / .-.. ..- -. --. ... --..-- \n .-- .... . -. / -.. .- .-. -.- -. . ... ... / ..-. .- .-.. .-.. ... --..-- / .. / -.- . . .--. / - .... . / .-.. .. --. .... - ... / .- .-.. .. ...- . .-.-.- \n .-- .... .- - / .- -- / .. ..--.. \n Find Answer Near Me!",
     5: "A eplac wrehe dahns tearce dna ednm, \nTamel nda oodw, sloot revne dne. \nEwher rpkass yam ylf, nda saedii rgow, \nDinf em wrehe eth scmtafnrer og."
-};
-const answers = {
-    2: "footsteps",
-    3: "arcana42",
-    4: "ARBOR88",
-    5: "FORGE58"
 };
 
 // ✅ Check If We Are on level.html Before Running the Script
@@ -55,38 +49,39 @@ if (window.location.pathname.includes("level.html")) {
         const level = parseInt(urlParams.get("level")) || 2;
 
         const answer = document.getElementById("answerInput").value.trim().toLowerCase();
-        const correctAnswer = answers[level].toLowerCase();
 
-        if (answer === correctAnswer) { 
-            feedback.innerHTML = "<span class='success-text'>Correct! Proceeding to next level...</span>";
-            console.log(`✅ Correct answer entered for Level ${level}. Updating Firestore...`);
+        try {
+            // Fetch the correct answer from Firestore
+            const levelRef = doc(db, "levels", level.toString());
+            const levelSnap = await getDoc(levelRef);
 
-            try {
+            if (!levelSnap.exists()) {
+                console.warn(`⚠️ No answer found for Level ${level}`);
+                feedback.innerHTML = "<span style='color: red;'>Error: Level data not found.</span>";
+                return;
+            }
+
+            const levelData = levelSnap.data();
+            const correctAnswer = levelData.answer.toLowerCase(); // Stored answer in Firestore
+
+            if (answer === correctAnswer) {
+                feedback.innerHTML = "<span class='success-text'>Correct! Proceeding to next level...</span>";
+                console.log(`✅ Correct answer entered for Level ${level}. Updating Firestore...`);
+
+                // Update player's level in Firestore
                 const playerRef = doc(db, "players", studentID);
                 await updateDoc(playerRef, { level: level + 1 });
 
                 console.log("✅ Firestore update successful! Moving to next level...");
-
-                const nextLevel = level + 1;
-
-                // ✅ Ensure the update is confirmed before redirecting
                 setTimeout(() => {
-                    console.log(`🔄 Checking if Level ${nextLevel} exists in riddles...`);
-                    if (riddles[nextLevel]) {
-                        console.log(`🎉 Level ${nextLevel} found! Redirecting now...`);
-                        window.location.href = `level.html?level=${nextLevel}`;
-                    } else {
-                        console.log("⌛ No new levels yet. Redirecting to waiting page...");
-                        window.location.href = `waiting.html?level=${level}`;
-                    }
+                    window.location.href = `level.html?level=${level + 1}`;
                 }, 2000);
-
-            } catch (error) {
-                console.error("❌ Firestore update failed:", error);
-                feedback.innerHTML = "<span style='color: red;'>Error proceeding. Try again.</span>";
+            } else {
+                feedback.innerHTML = "<span style='color: red;'>Wrong answer! Try again.</span>";
             }
-        } else {
-            feedback.innerHTML = "<span style='color: red;'>Wrong answer! Try again.</span>";
+        } catch (error) {
+            console.error("❌ Firestore error:", error);
+            feedback.innerHTML = "<span style='color: red;'>Error validating answer. Try again.</span>";
         }
     }
 
