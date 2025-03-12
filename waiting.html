@@ -19,7 +19,8 @@
     </div>
 
     <script type="module">
-    import riddles from "./levels.js";
+    import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+    import { db } from "./firebase-config.js";
     import { auth } from "./firebase-config.js";
     import { signOut } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
@@ -28,28 +29,23 @@
     const nextLevel = lastLevel + 1;
 
     async function checkForNewLevels() {
-        console.log("🔍 Checking for new levels...");
-
-        // ✅ Force Fetch Latest Data (Bypassing Cache)
+        console.log("🔍 Checking for new levels in Firestore...");
         try {
-            const response = await fetch("levels.js?t=" + new Date().getTime());
-            if (!response.ok) {
-                throw new Error("Failed to fetch levels.js");
+            const levelRef = doc(db, "answers", nextLevel.toString());
+            const levelSnap = await getDoc(levelRef);
+
+            if (levelSnap.exists()) {
+                console.log("🎉 New level found! Redirecting...");
+                window.location.href = `level.html?level=${nextLevel}`;
+            } else {
+                document.getElementById("status").innerText = "No new levels yet. Keep waiting...";
             }
         } catch (error) {
-            console.error("❌ Error fetching levels.js:", error);
-        }
-
-        // ✅ Now Check If Next Level Exists
-        if (riddles[nextLevel]) {
-            console.log("🎉 New level found! Redirecting...");
-            window.location.href = `level.html?level=${nextLevel}`;
-        } else {
-            document.getElementById("status").innerText = "No new levels yet. Keep waiting...";
+            console.error("❌ Error fetching level from Firestore:", error);
         }
     }
 
-    // ✅ Check Every 3 Seconds Instead of 5
+    // ✅ Check Every 3 Seconds
     setInterval(checkForNewLevels, 3000);
 
     // 🔹 ANNOUNCEMENTS SYSTEM (Only Message)
@@ -81,3 +77,6 @@
     // ✅ Start the logout timer when the user reaches the waiting page
     startLogoutTimer();
 </script>
+
+</body>
+</html>
