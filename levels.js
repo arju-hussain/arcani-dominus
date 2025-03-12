@@ -11,11 +11,11 @@ export async function getRiddle(level) {
             return levelSnap.data().riddle;
         } else {
             console.warn(`⚠️ No riddle found for Level ${level}`);
-            return "Riddle not found!";
+            return null;
         }
     } catch (error) {
         console.error("❌ Firestore error while fetching riddle:", error);
-        return "Error loading riddle!";
+        return null;
     }
 }
 
@@ -55,8 +55,6 @@ async function submitAnswer() {
         
         if (correctAnswer && answerInput === correctAnswer) {
             feedback.innerHTML = "<span class='success-text'>Correct! Proceeding to next level...</span>";
-
-            // ✅ Update player progress in Firestore
             const playerRef = doc(db, "players", studentID);
             await updateDoc(playerRef, { level: level + 1 });
 
@@ -89,6 +87,11 @@ onAuthStateChanged(auth, async (user) => {
                 window.location.href = `level.html?level=${lastLevel}`;
             } else {
                 console.log(`✅ User is already on the correct level: ${currentLevel}`);
+                const riddle = await getRiddle(currentLevel);
+                if (!riddle) {
+                    console.warn(`⚠ No riddle found for Level ${currentLevel}. Redirecting to waiting page...`);
+                    window.location.href = `waiting.html?level=${currentLevel}`;
+                }
             }
         }
     }
