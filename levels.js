@@ -19,53 +19,61 @@ async function getRiddle(level) {
     }
 }
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const result = document.getElementById("result");
+document.addEventListener("DOMContentLoaded", () => {
+    const loginBtn = document.getElementById("loginBtn");
 
-    if (!email || !password) {
-        result.innerHTML = "<span style='color: red;'>Please enter both email and password.</span>";
-        return;
-    }
+    if (loginBtn) {
+        loginBtn.addEventListener("click", async () => {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const result = document.getElementById("result");
 
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        console.log("✅ User logged in:", user.email);
-
-        // ✅ Fetch the player's saved level from Firestore
-        const playerRef = doc(db, "players", user.uid);
-        const playerSnap = await getDoc(playerRef);
-
-        if (playerSnap.exists()) {
-            const playerData = playerSnap.data();
-            const lastLevel = playerData.level || 2; // ✅ Default to Level 2 if no data found
-
-            console.log(`🔄 Fetching riddle for Level ${lastLevel}...`);
-            const riddle = await getRiddle(lastLevel);
-
-            if (riddle) {
-                console.log(`🧩 Riddle for Level ${lastLevel}:`, riddle);
-                result.innerHTML = `<span class='success-text'>Login successful! Redirecting to Level ${lastLevel}...</span>`;
-                setTimeout(() => {
-                    window.location.href = `level.html?level=${lastLevel}`;
-                }, 2000);
-            } else {
-                console.warn(`⚠ No data found for Level ${lastLevel}. Redirecting to waiting page...`);
-                result.innerHTML = "<span style='color: orange;'>Waiting for the next challenge...</span>";
-                setTimeout(() => {
-                    window.location.href = `waiting.html?level=${lastLevel}`;
-                }, 2000);
+            if (!email || !password) {
+                result.innerHTML = "<span style='color: red;'>Please enter both email and password.</span>";
+                return;
             }
-        } else {
-            console.warn("⚠ No player data found. Redirecting to Level 2...");
-            window.location.href = "level.html?level=2";
-        }
-    } catch (error) {
-        console.error("❌ Login failed:", error);
-        result.innerHTML = `<span style='color: red;'>Error: ${error.message}</span>`;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                console.log("✅ User logged in:", user.email);
+
+                // ✅ Fetch the player's saved level from Firestore
+                const playerRef = doc(db, "players", user.uid);
+                const playerSnap = await getDoc(playerRef);
+
+                if (playerSnap.exists()) {
+                    const playerData = playerSnap.data();
+                    const lastLevel = playerData.level || 2; // ✅ Default to Level 2 if no data found
+
+                    console.log(`🔄 Fetching riddle for Level ${lastLevel}...`);
+                    const riddle = await getRiddle(lastLevel);
+
+                    if (riddle) {
+                        console.log(`🧩 Riddle for Level ${lastLevel}:`, riddle);
+                        result.innerHTML = `<span class='success-text'>Login successful! Redirecting to Level ${lastLevel}...</span>`;
+                        setTimeout(() => {
+                            window.location.href = `level.html?level=${lastLevel}`;
+                        }, 2000);
+                    } else {
+                        console.warn(`⚠ No data found for Level ${lastLevel}. Redirecting to waiting page...`);
+                        result.innerHTML = "<span style='color: orange;'>Waiting for the next challenge...</span>";
+                        setTimeout(() => {
+                            window.location.href = `waiting.html?level=${lastLevel}`;
+                        }, 2000);
+                    }
+                } else {
+                    console.warn("⚠ No player data found. Redirecting to Level 2...");
+                    window.location.href = "level.html?level=2";
+                }
+            } catch (error) {
+                console.error("❌ Login failed:", error);
+                result.innerHTML = `<span style='color: red;'>Error: ${error.message}</span>`;
+            }
+        });
+    } else {
+        console.warn("⚠ loginBtn not found on this page.");
     }
 });
 
