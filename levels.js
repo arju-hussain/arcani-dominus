@@ -1,6 +1,6 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
-import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+import { getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
 export async function getRiddle(level) {
     try {
@@ -16,6 +16,58 @@ export async function getRiddle(level) {
     } catch (error) {
         console.error("❌ Firestore error while fetching riddle:", error);
         return "Error loading riddle!";
+    }
+}
+
+export async function getAnswer(level) {
+    try {
+        const levelRef = doc(db, "answers", level.toString());
+        const levelSnap = await getDoc(levelRef);
+
+        if (levelSnap.exists()) {
+            return levelSnap.data().answer.toLowerCase();
+        } else {
+            console.warn(`⚠️ No answer found for Level ${level}`);
+            return null;
+        }
+    } catch (error) {
+        console.error("❌ Firestore error while fetching answer:", error);
+        return null;
+    }
+}
+
+async function submitAnswer() {
+    const user = auth.currentUser;
+    const feedback = document.getElementById("feedback");
+
+    if (!user) {
+        feedback.innerHTML = "<span style='color: red;'>Error: You need to log in first.</span>";
+        return;
+    }
+
+    const studentID = user.uid;
+    const urlParams = new URLSearchParams(window.location.search);
+    const level = parseInt(urlParams.get("level")) || 2;
+    const answerInput = document.getElementById("answerInput").value.trim().toLowerCase();
+
+    try {
+        const correctAnswer = await getAnswer(level);
+        
+        if (correctAnswer && answerInput === correctAnswer) {
+            feedback.innerHTML = "<span class='success-text'>Correct! Proceeding to next level...</span>";
+
+            // ✅ Update player progress in Firestore
+            const playerRef = doc(db, "players", studentID);
+            await updateDoc(playerRef, { level: level + 1 });
+
+            setTimeout(() => {
+                window.location.href = `level.html?level=${level + 1}`;
+            }, 2000);
+        } else {
+            feedback.innerHTML = "<span style='color: red;'>Wrong answer! Try again.</span>";
+        }
+    } catch (error) {
+        console.error("❌ Error checking answer:", error);
     }
 }
 
@@ -39,6 +91,16 @@ onAuthStateChanged(auth, async (user) => {
                 console.log(`✅ User is already on the correct level: ${currentLevel}`);
             }
         }
+    }
+});
+
+// ✅ Attach Submit Button Event
+document.addEventListener("DOMContentLoaded", () => {
+    const submitButton = document.getElementById("submitAnswer");
+    if (submitButton) {
+        submitButton.addEventListener("click", submitAnswer);
+    } else {
+        console.warn("⚠ Submit button not found in HTML.");
     }
 });
 
