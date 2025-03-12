@@ -2,6 +2,22 @@ import { auth, db } from "./firebase-config.js";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
+async function getRiddle(level) {
+    try {
+        const levelRef = doc(db, "levels", level.toString());
+        const levelSnap = await getDoc(levelRef);
+
+        if (levelSnap.exists()) {
+            return levelSnap.data().riddle;
+        } else {
+            console.warn(`⚠️ No riddle found for Level ${level}`);
+            return "Riddle not found!";
+        }
+    } catch (error) {
+        console.error("❌ Firestore error while fetching riddle:", error);
+        return "Error loading riddle!";
+    }
+}
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value.trim();
@@ -27,22 +43,14 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
             const playerData = playerSnap.data();
             const lastLevel = playerData.level || 2; // ✅ Default to Level 2 if no data found
 
-            console.log(`🔄 Checking if Level ${lastLevel} exists in riddles...`);
+            console.log(`🔄 Fetching riddle for Level ${lastLevel}...`);
+            const riddle = await getRiddle(lastLevel);
+            console.log(`🧩 Riddle for Level ${lastLevel}:`, riddle);
 
-            // ✅ If the level exists, take them to it; otherwise, go to the waiting page
-            if (riddles[lastLevel]) {
-                console.log(`🎯 Level ${lastLevel} exists! Redirecting...`);
-                result.innerHTML = `<span class='success-text'>Login successful! Redirecting to Level ${lastLevel}...</span>`;
-                setTimeout(() => {
-                    window.location.href = `level.html?level=${lastLevel}`;
-                }, 2000);
-            } else {
-                console.warn(`⚠ Level ${lastLevel} does not exist! Redirecting to waiting page.`);
-                result.innerHTML = "<span style='color: orange;'>Waiting for the next challenge...</span>";
-                setTimeout(() => {
-                    window.location.href = `waiting.html?level=${lastLevel}`;
-                }, 2000);
-            }
+            result.innerHTML = `<span class='success-text'>Login successful! Redirecting to Level ${lastLevel}...</span>`;
+            setTimeout(() => {
+                window.location.href = `level.html?level=${lastLevel}`;
+            }, 2000);
         } else {
             console.warn("⚠ No player data found. Redirecting to Level 2...");
             window.location.href = "level.html?level=2";
@@ -63,15 +71,11 @@ onAuthStateChanged(auth, async (user) => {
 
         if (playerSnap.exists()) {
             const lastLevel = playerSnap.data().level || 2;
+            console.log(`🔄 Fetching riddle for Level ${lastLevel}...`);
+            const riddle = await getRiddle(lastLevel);
+            console.log(`🧩 Riddle for Level ${lastLevel}:`, riddle);
 
-            // ✅ Redirect only if the level exists
-            if (riddles[lastLevel]) {
-                console.log(`🔄 Redirecting logged-in user to Level ${lastLevel}...`);
-                window.location.href = `level.html?level=${lastLevel}`;
-            } else {
-                console.warn(`⚠ Level ${lastLevel} does not exist! Redirecting to waiting page.`);
-                window.location.href = `waiting.html?level=${lastLevel}`;
-            }
+            window.location.href = `level.html?level=${lastLevel}`;
         }
     }
 });
