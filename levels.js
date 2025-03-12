@@ -1,5 +1,5 @@
 import { auth, db } from "./firebase-config.js";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
 export async function getRiddle(level) {
@@ -11,11 +11,11 @@ export async function getRiddle(level) {
             return levelSnap.data().riddle;
         } else {
             console.warn(`⚠️ No riddle found for Level ${level}`);
-            return null;
+            return "Riddle not found!";
         }
     } catch (error) {
         console.error("❌ Firestore error while fetching riddle:", error);
-        return null;
+        return "Error loading riddle!";
     }
 }
 
@@ -29,15 +29,14 @@ onAuthStateChanged(auth, async (user) => {
 
         if (playerSnap.exists()) {
             const lastLevel = playerSnap.data().level || 2;
-            console.log(`🔄 Fetching riddle for Level ${lastLevel}...`);
-            const riddle = await getRiddle(lastLevel);
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentLevel = parseInt(urlParams.get("level")) || 2;
 
-            if (riddle) {
-                console.log(`🧩 Riddle for Level ${lastLevel}:`, riddle);
+            if (lastLevel !== currentLevel) {
+                console.log(`🔄 Redirecting user to their correct level: ${lastLevel}`);
                 window.location.href = `level.html?level=${lastLevel}`;
             } else {
-                console.warn(`⚠ No data found for Level ${lastLevel}. Redirecting to waiting page...`);
-                window.location.href = `waiting.html?level=${lastLevel}`;
+                console.log(`✅ User is already on the correct level: ${currentLevel}`);
             }
         }
     }
