@@ -7,7 +7,7 @@ if (window.location.pathname.includes("level.html")) {
     
     async function getLevelData(level) {
         try {
-            const levelRef = doc(db, "levels", level.toString());
+            const levelRef = doc(db, "answers", level.toString());
             const levelSnap = await getDoc(levelRef);
 
             if (levelSnap.exists()) {
