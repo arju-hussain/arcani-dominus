@@ -36,6 +36,23 @@ export async function getAnswer(level) {
     }
 }
 
+export async function getAnnouncement() {
+    try {
+        const announcementRef = doc(db, "announcements", "latest");
+        const announcementSnap = await getDoc(announcementRef);
+
+        if (announcementSnap.exists()) {
+            return announcementSnap.data().message;
+        } else {
+            console.warn("⚠️ No announcement found in Firestore.");
+            return "No announcements available.";
+        }
+    } catch (error) {
+        console.error("❌ Firestore error while fetching announcement:", error);
+        return "Error loading announcements.";
+    }
+}
+
 async function submitAnswer() {
     const user = auth.currentUser;
     const feedback = document.getElementById("feedback");
@@ -98,12 +115,19 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ✅ Attach Submit Button Event
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const submitButton = document.getElementById("submitAnswer");
     if (submitButton) {
         submitButton.addEventListener("click", submitAnswer);
     } else {
         console.warn("⚠ Submit button not found in HTML.");
+    }
+
+    // ✅ Load Announcements
+    const announcementElement = document.getElementById("announcements");
+    if (announcementElement) {
+        const announcementText = await getAnnouncement();
+        announcementElement.innerText = announcementText;
     }
 });
 
