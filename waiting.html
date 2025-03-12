@@ -48,19 +48,24 @@
     // ✅ Check Every 3 Seconds
     setInterval(checkForNewLevels, 3000);
 
-    // 🔹 ANNOUNCEMENTS SYSTEM (Only Message)
+    // 🔹 ANNOUNCEMENTS SYSTEM FROM FIRESTORE
     async function loadAnnouncements() {
         try {
-            let response = await fetch("announcements.json");
-            let data = await response.json();
-            document.getElementById("announcements").innerText = data.message;
+            const announcementRef = doc(db, "announcements", "latest");
+            const announcementSnap = await getDoc(announcementRef);
+
+            if (announcementSnap.exists()) {
+                document.getElementById("announcements").innerText = announcementSnap.data().message;
+            } else {
+                document.getElementById("announcements").innerText = "No announcements available.";
+            }
         } catch (error) {
-            console.error("❌ Error loading announcements:", error);
+            console.error("❌ Error loading announcements from Firestore:", error);
             document.getElementById("announcements").innerText = "Failed to load announcements.";
         }
     }
 
-    // Load announcements on page load
+    // ✅ Load announcements on page load
     loadAnnouncements();
 
     // ✅ LOGOUT AFTER 1 MINUTE (TESTING)
