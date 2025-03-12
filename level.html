@@ -30,12 +30,18 @@
 
     <!-- ✅ JavaScript Code -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
-
-        // ✅ Import Firebase Config (Ensures `db` is available)
         import { db } from "./firebase-config.js";
-        import "./levels.js"; // ✅ Loads riddles & level system
+        import { getDoc, doc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { getRiddle } from "./levels.js"; // ✅ Fetch riddle from Firestore
+
+        async function loadRiddle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const level = parseInt(urlParams.get("level")) || 2;
+
+            const riddleText = await getRiddle(level);
+            document.getElementById("levelTitle").innerText = `Level ${level}`;
+            document.getElementById("riddleText").innerText = riddleText || "Riddle not found!";
+        }
 
         async function loadLeaderboard() {
             try {
@@ -46,12 +52,10 @@
                 }
 
                 leaderboardDiv.innerHTML = "<p>Loading...</p>";
-
                 const leaderboardQuery = query(
                     collection(db, "players"),
                     orderBy("level", "desc")
                 );
-
                 const querySnapshot = await getDocs(leaderboardQuery);
 
                 if (querySnapshot.empty || querySnapshot.docs.length === 0) {
@@ -79,8 +83,9 @@
             }
         }
 
-        // ✅ Ensure the leaderboard button exists before adding event listeners
         document.addEventListener("DOMContentLoaded", () => {
+            loadRiddle(); // ✅ Load riddle from Firestore
+
             const leaderboardBtn = document.getElementById("loadLeaderboardBtn");
             const leaderboardDiv = document.getElementById("leaderboard");
 
@@ -97,7 +102,6 @@
             }
         });
 
-        // 🔹 ANNOUNCEMENTS SYSTEM (Only Message)
         async function loadAnnouncements() {
             try {
                 let response = await fetch("announcements.json");
@@ -109,9 +113,7 @@
             }
         }
 
-        // ✅ Load announcements on page load
         loadAnnouncements();
     </script>
-
 </body>
 </html>
