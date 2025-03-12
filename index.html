@@ -78,7 +78,7 @@
 </head>
 <body>
     <div id="container">
-        <h1> Orbis Arcana - The Beginning</h1>
+        <h1>🔮 Orbis Arcana - The Beginning</h1>
         <p style="font-size: 1.3em;">Welcome, Seeker. You have entered a world where only the clever and the bold shall pass.</p>
         <p style="font-size: 1.2em;">This is not just a game—it is a test of wisdom, wit, and perception.</p>
 
@@ -90,7 +90,7 @@
                 <li>🤝 <b>No Sharing Answers</b> - The journey must be taken alone.</li>
                 <li>⚔ <b>Beware of False Clues</b> - Not all hints are what they seem.</li>
                 <li>🏆 <b>Only the Worthy Advance</b> - There are no shortcuts.</li>
-                <li>🚨 <b>Clues Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the clues placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
+                <li>🚨 <b>Clues Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the Clues placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
             </ul>
         </div>
 
@@ -122,13 +122,6 @@
             localStorage.setItem("hasAgreed", "true"); // Store agreement in localStorage
             window.location.href = "firstgate.html"; // Redirect to first gate page
         });
-
-        // ✅ Check if the user has already agreed before
-        window.onload = function() {
-            if (localStorage.getItem("hasAgreed") === "true") {
-                window.location.href = "firstgate.html";
-            }
-        };
     </script>
 </body>
 </html>
