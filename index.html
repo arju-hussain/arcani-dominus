@@ -89,7 +89,7 @@
 
         <div class="input-container">
             <p>To proceed, type "<b>I Agree</b>" below and press Enter:</p>
-            <input type="text" id="agreeInput" placeholder="Type here..." onkeyup="checkAgreement()">
+            <input type="text" id="agreeInput" placeholder="Type here..." oninput="checkAgreement()">
             <p class="warning" id="warningText"></p>
         </div>
 
@@ -112,8 +112,16 @@
         }
 
         document.getElementById("startGame").addEventListener("click", function() {
-            window.location.href = "index.html"; // Redirect to main game index page
+            localStorage.setItem("hasAgreed", "true"); // Store agreement in localStorage
+            window.location.href = "firstgate.html"; // Redirect to main game index page
         });
+
+        // ✅ Check if the user has already agreed before
+        window.onload = function() {
+            if (localStorage.getItem("hasAgreed") === "true") {
+                window.location.href = "firstgate.html";
+            }
+        };
     </script>
 </body>
 </html>
