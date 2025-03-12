@@ -32,24 +32,59 @@
     <script type="module">
         import { db } from "./firebase-config.js";
         import { getDoc, doc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
-        import { getRiddle } from "./levels.js"; // ✅ Fetch riddle from Firestore
+        import { getRiddle, getAnswer } from "./levels.js";
+        import { auth } from "./firebase-config.js";
+        import { updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
         async function loadRiddle() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const level = parseInt(urlParams.get("level")) || 2;
+            const urlParams = new URLSearchParams(window.location.search);
+            const level = parseInt(urlParams.get("level")) || 2;
 
-    const riddleTextElement = document.getElementById("riddleText");
-    const levelTitleElement = document.getElementById("levelTitle");
+            const riddleTextElement = document.getElementById("riddleText");
+            const levelTitleElement = document.getElementById("levelTitle");
 
-    if (!riddleTextElement || !levelTitleElement) {
-        console.warn("⚠ Riddle elements not found in HTML.");
-        return;
-    }
+            if (!riddleTextElement || !levelTitleElement) {
+                console.warn("⚠ Riddle elements not found in HTML.");
+                return;
+            }
 
-    const riddleText = await getRiddle(level);
-    levelTitleElement.innerText = `Level ${level}`;
-    riddleTextElement.innerText = riddleText || "Riddle not found!";
-}
+            const riddleText = await getRiddle(level);
+            levelTitleElement.innerText = `Level ${level}`;
+            riddleTextElement.innerText = riddleText || "Riddle not found!";
+        }
+
+        async function submitAnswer() {
+            const user = auth.currentUser;
+            const feedback = document.getElementById("feedback");
+
+            if (!user) {
+                feedback.innerHTML = "<span style='color: red;'>Error: You need to log in first.</span>";
+                return;
+            }
+
+            const studentID = user.uid;
+            const urlParams = new URLSearchParams(window.location.search);
+            const level = parseInt(urlParams.get("level")) || 2;
+            const answerInput = document.getElementById("answerInput").value.trim().toLowerCase();
+
+            try {
+                const correctAnswer = await getAnswer(level);
+                
+                if (correctAnswer && answerInput === correctAnswer) {
+                    feedback.innerHTML = "<span class='success-text'>Correct! Proceeding to next level...</span>";
+                    const playerRef = doc(db, "players", studentID);
+                    await updateDoc(playerRef, { level: level + 1 });
+
+                    setTimeout(() => {
+                        window.location.href = `level.html?level=${level + 1}`;
+                    }, 2000);
+                } else {
+                    feedback.innerHTML = "<span style='color: red;'>Wrong answer! Try again.</span>";
+                }
+            } catch (error) {
+                console.error("❌ Error checking answer:", error);
+            }
+        }
 
         async function loadLeaderboard() {
             try {
@@ -92,8 +127,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            loadRiddle(); // ✅ Load riddle from Firestore
-
+            loadRiddle();
+            
+            const submitButton = document.getElementById("submitAnswer");
+            if (submitButton) {
+                submitButton.addEventListener("click", submitAnswer);
+            }
+            
             const leaderboardBtn = document.getElementById("loadLeaderboardBtn");
             const leaderboardDiv = document.getElementById("leaderboard");
 
