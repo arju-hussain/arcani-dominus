@@ -9,14 +9,17 @@
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background-color: #0a0a0a;
+            background: url('OrbisArcanaLogo.png') no-repeat center center fixed;
+            background-size: cover;
             color: #ffffff;
-            padding: 40px;
+            padding: 20px;
+            margin: 0;
         }
         #container {
-            max-width: 900px;
+            width: 90%;
+            max-width: 1200px;
             margin: auto;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.7);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
@@ -27,10 +30,10 @@
         }
         .rules {
             text-align: left;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
             border-radius: 10px;
-            margin-top: 25px;
+            margin-top: 20px;
             line-height: 1.8;
         }
         ul {
@@ -46,7 +49,7 @@
         }
         #agreeInput {
             padding: 12px;
-            font-size: 1.1em;
+            font-size: 1.2em;
             width: 60%;
             text-align: center;
             border-radius: 5px;
@@ -63,7 +66,7 @@
             cursor: pointer;
             margin-top: 20px;
             transition: 0.3s;
-            display: none; /* Hidden initially */
+            display: none;
         }
         .start-button:hover {
             background: #ffaa00;
@@ -78,9 +81,9 @@
 </head>
 <body>
     <div id="container">
-        <h1>🔮 Orbis Arcana - The Beginning</h1>
-        <p style="font-size: 1.3em;">Welcome, Seeker. You have entered a world where only the clever and the bold shall pass.</p>
-        <p style="font-size: 1.2em;">This is not just a game—it is a test of wisdom, wit, and perception.</p>
+        <h1>Orbis Arcana - The Beginning</h1>
+        <p>Welcome, Seeker. You have entered a world where only the clever and the bold shall pass.</p>
+        <p>This is not just a game—it is a test of wisdom, wit, and perception.</p>
 
         <div class="rules">
             <h2>📜 Rules of the Arcana</h2>
@@ -90,12 +93,12 @@
                 <li>🤝 <b>No Sharing Answers</b> - The journey must be taken alone.</li>
                 <li>⚔ <b>Beware of False Clues</b> - Not all hints are what they seem.</li>
                 <li>🏆 <b>Only the Worthy Advance</b> - There are no shortcuts.</li>
-                <li>🚨 <b>Clues Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the Clues placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
+                <li>🚨 <b>Clues Must Not Be Tampered With</b> - Any attempt to <b>destroy, move, or tamper</b> with the clues placed in different locations <b>will lead to disqualification</b> if found guilty.</li>
             </ul>
         </div>
 
         <div class="input-container">
-            <p style="font-size: 1.2em;">To proceed, type "<b>I Agree</b>" below and press Enter:</p>
+            <p>To proceed, type "<b>I Agree</b>" below and press Enter:</p>
             <input type="text" id="agreeInput" placeholder="Type here..." oninput="checkAgreement()">
             <p class="warning" id="warningText"></p>
         </div>
@@ -110,17 +113,17 @@
             const warningText = document.getElementById("warningText");
 
             if (input === "i agree") {
-                button.style.display = "block"; // Show button when correct input
+                button.style.display = "block";
                 warningText.innerText = "";
             } else {
-                button.style.display = "none"; // Hide button if input is incorrect
+                button.style.display = "none";
                 warningText.innerText = "You must type 'I Agree' exactly to continue.";
             }
         }
 
         document.getElementById("startGame").addEventListener("click", function() {
-            localStorage.setItem("hasAgreed", "true"); // Store agreement in localStorage
-            window.location.href = "firstgate.html"; // Redirect to first gate page
+            localStorage.setItem("hasAgreed", "true");
+            window.location.href = "firstgate.html";
         });
     </script>
 </body>
