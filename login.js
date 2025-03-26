@@ -80,6 +80,27 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// ✅ Forgot Password Functionality
+document.getElementById("forgotPassword").addEventListener("click", async (event) => {
+    event.preventDefault();
+    
+    const email = prompt("Enter your email to reset the password:");
+    
+    if (!email) {
+        alert("❌ Please enter a valid email.");
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        alert("✅ Password reset link sent! Check your email.");
+    } catch (error) {
+        console.error("❌ Failed to send reset email:", error);
+        alert(`❌ Error: ${error.message}`);
+    }
+});
+
+
 // ✅ Force reload to get latest data on mobile
 window.onload = function() {
     if ('serviceWorker' in navigator) {
