@@ -85,7 +85,7 @@ onAuthStateChanged(auth, async (user) => {
 // ✅ Forgot Password Functionality
 document.getElementById("forgotPassword").addEventListener("click", async (event) => {
     event.preventDefault();
-    
+
     const email = prompt("Enter your email to reset the password:");
     
     if (!email) {
@@ -101,6 +101,7 @@ document.getElementById("forgotPassword").addEventListener("click", async (event
         alert(`❌ Error: ${error.message}`);
     }
 });
+
 
 
 // ✅ Force reload to get latest data on mobile
